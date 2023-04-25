@@ -37,7 +37,7 @@ const Header = () => {
               <>
                 <Link
                   href={`/api/auth/signin`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault()
                     signIn()
                   }}
@@ -50,7 +50,7 @@ const Header = () => {
               <>
                 <Link
                   href={`/api/auth/signout`}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault()
                     signOut()
                   }}

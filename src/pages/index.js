@@ -7,9 +7,5 @@ import { useSession } from "next-auth/react"
 export default function Home() {
   const { data: session } = useSession()
   console.log(session, "session")
-  return (
-    <Layout>
-      Hey {session ? JSON.stringify(session, null, 2) : "stranger"}
-    </Layout>
-  )
+  return <Layout>Hey {session ? JSON.stringify(session, null, 2) : "stranger"}</Layout>
 }

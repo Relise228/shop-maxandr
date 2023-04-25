@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
 
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
@@ -18,8 +18,8 @@ export const authOptions = {
 
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    }),
+      clientSecret: process.env.GOOGLE_SECRET
+    })
 
     // Auth0Provider({
     //   clientId: process.env.AUTH0_ID,
@@ -28,14 +28,14 @@ export const authOptions = {
     // }),
   ],
   theme: {
-    colorScheme: 'light',
+    colorScheme: "light"
   },
   callbacks: {
     async jwt({ token }) {
       //   token.userRole = 'admin';
-      return token;
-    },
-  },
-};
+      return token
+    }
+  }
+}
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions)
