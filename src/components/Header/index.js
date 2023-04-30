@@ -11,7 +11,7 @@ const Header = () => {
   const { data: session, status } = useSession()
 
   return (
-    <div className="header fixed w-full top-0 py-5 bg-white shadow-md z-10">
+    <div className="header fixed w-full top-0 py-5 bg-white shadow-md z-50">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
           <div>
