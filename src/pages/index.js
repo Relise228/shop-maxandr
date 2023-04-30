@@ -31,7 +31,6 @@ export default function Home() {
   const [products, setProducts] = useState([])
   const [parallaxSwiper, setParallaxSwiper] = useState(null)
   const parallaxAmount = parallaxSwiper ? parallaxSwiper.width * 0.95 : 0
-  const parallaxOpacity = 0.5
 
   const getProducts = async () => {
     const res = await axios.get(API_PRODUCTS)
@@ -68,7 +67,6 @@ export default function Home() {
             <div
               className="h-full w-full absolute top-0 bottom-0 left-0 right-0 m-auto flex justify-center items-center"
               data-swiper-parallax={parallaxAmount}
-              data-swiper-parallax-opacity={parallaxOpacity}
             >
               <div className="relative h-full w-full">
                 <Image src={slide.image} alt={slide.title} fill style={{ objectFit: "cover" }} />
@@ -86,13 +84,13 @@ export default function Home() {
         ))}
       </Swiper>
       <div className="container mx-auto">
-        <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <div className="text-center pb-10">
-            <h2 class="pb-2 text-4xl text-[#0B254B] font-medium">Clothes</h2>
+            <h2 className="pb-2 text-4xl text-[#0B254B] font-medium">Clothes</h2>
             <h4 className="text-lg font-medium text-[#5E6E89]">Choose your best style</h4>
           </div>
 
-          <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
             {new Array(8).fill("").map((i, index) => (
               <ProductItem key={index} />
             ))}
