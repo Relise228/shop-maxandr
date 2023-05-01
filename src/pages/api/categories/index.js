@@ -1,5 +1,5 @@
 import db from "@utils/db"
-import Product from "../../../models/Product"
+import Category from "../../../models/Category"
 
 const handler = async (req, res) => {
   if (req.method === "GET") {
@@ -13,20 +13,20 @@ const handler = async (req, res) => {
 
 const getHandler = async (req, res) => {
   await db.connect()
-  const products = await Product.find().populate("category").populate("brand").populate("season")
+  const categories = await Category.find()
   await db.disconnect()
-  res.send(products)
+  res.send(categories)
 }
 
 const postHandler = async (req, res) => {
   await db.connect()
-  const newProduct = new Product({
+  const newCategory = new Category({
     ...(req.body ?? {})
   })
 
-  const product = await newProduct.save()
+  const category = await newCategory.save()
   await db.disconnect()
-  res.send({ message: "Product created successfully", product })
+  res.send({ message: "Category created successfully", data: category })
 }
 
 export default handler

@@ -1,18 +1,15 @@
-import { API_BRANDS, API_CATEGORIES, API_PRODUCTS, API_SEASONS } from "@utils/constants"
+import { API_PRODUCTS } from "@utils/constants"
 import axios from "axios"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import { useBrandsSeasonsCategories } from "./useBrandsSeasonsCategories"
 
 const useCreateUpdateProduct = productId => {
   const sizes = ["xs", "s", "m", "l", "xl", "xxl"]
 
   const [isLoading, setIsLoading] = useState(false)
   const [err, setErr] = useState("")
-  const [options, setOptions] = useState({
-    categories: [],
-    brands: [],
-    seasons: []
-  })
+  const { options } = useBrandsSeasonsCategories()
   const [formValues, setFormValues] = useState({
     name: "",
     slug: "",
@@ -47,22 +44,6 @@ const useCreateUpdateProduct = productId => {
     })
   }
 
-  const getAllOptions = async () => {
-    const endpoints = [API_BRANDS, API_CATEGORIES, API_SEASONS]
-    const results = await Promise.all(endpoints.map(endpoint => axios.get(endpoint)))
-    const [brands, categories, seasons] = results.map(res =>
-      res.data.map(optionItem => ({
-        value: optionItem._id,
-        label: optionItem.name
-      }))
-    )
-
-    setOptions({ brands, categories, seasons })
-  }
-
-  useEffect(() => {
-    getAllOptions()
-  }, [])
   useEffect(() => {
     if (productId) {
       setProductValues()

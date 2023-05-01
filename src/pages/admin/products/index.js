@@ -42,8 +42,8 @@ const AdminProductsPage = () => {
               />
             </Link>
             <div>${product.price}</div>
-            <div>${product.brand.name}</div>
-            <div>${product.category.name}</div>
+            <div>{product.brand?.name}</div>
+            <div>{product.category?.name}</div>
           </div>
         </div>
       ))}
