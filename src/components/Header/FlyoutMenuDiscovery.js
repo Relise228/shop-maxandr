@@ -35,7 +35,7 @@ const FlyoutMenuDiscovery = () => {
               {solutions.map(item => (
                 <div key={item.name} className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
                   <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                    <item.icon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                    <item.icon className="h-6 w-6 text-gray-600 group-hover:text-green" aria-hidden="true" />
                   </div>
                   <div>
                     <a href={item.href} className="font-semibold text-gray-900">

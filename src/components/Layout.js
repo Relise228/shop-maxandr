@@ -3,7 +3,7 @@ import Header from "./Header"
 
 const Layout = ({ children }) => {
   return (
-    <main className="relative min-h-screen h-[2000px] bg-white mt-24">
+    <main className="relative min-h-screen h-[2000px] bg-white">
       <Header />
       <main className="">{children}</main>
     </main>
