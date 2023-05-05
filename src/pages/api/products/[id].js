@@ -1,3 +1,4 @@
+import cloudinary from "@utils/cloudinary"
 import db from "@utils/db"
 import Product from "../../../models/Product"
 
@@ -22,12 +23,17 @@ const getHandler = async (req, res) => {
 
 const putHandler = async (req, res) => {
   await db.connect()
-  let product = await Product.findById(req.query.id)
+  const product = await Product.findById(req.query.id)
   if (product) {
+    const initialImagePublicId = product.image.public_id
     const productInputArr = Object.entries(req.body)
     productInputArr.forEach(([field, value]) => (product[field] = value))
     await product.save()
     await db.disconnect()
+
+    if (initialImagePublicId !== req.body.image.public_id) {
+      await cloudinary.uploader.destroy(initialImagePublicId)
+    }
     res.send({ message: "Product updated successfully" })
   } else {
     await db.disconnect()
@@ -37,9 +43,13 @@ const putHandler = async (req, res) => {
 
 const deleteHandler = async (req, res) => {
   await db.connect()
-  const product = await Product.findOneAndDelete(req.query.id)
+  const product = await Product.findOneAndDelete({ _id: req.query.id })
+  const public_id = product?.image.public_id
   if (product) {
     await db.disconnect()
+    if (public_id) {
+      await cloudinary.uploader.destroy(public_id)
+    }
     res.send({ message: "Product deleted successfully" })
   } else {
     await db.disconnect()

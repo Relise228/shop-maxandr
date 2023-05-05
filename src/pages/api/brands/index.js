@@ -20,7 +20,6 @@ const getHandler = async (req, res) => {
 
 const postHandler = async (req, res) => {
   await db.connect()
-  console.log(req.body, "req.body")
   const newBrand = new Brand({
     ...(req.body ?? {})
   })

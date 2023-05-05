@@ -5,7 +5,6 @@ import { useBrandsSeasonsCategories } from "../../hooks/useBrandsSeasonsCategori
 
 const AdminConfigsPage = () => {
   const { data, setData, isDataLoading } = useBrandsSeasonsCategories()
-  console.log(data)
   return (
     <Layout>
       <div className="mx-auto max-w-screen-md">

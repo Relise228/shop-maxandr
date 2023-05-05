@@ -44,7 +44,7 @@ const deleteHandler = async (req, res) => {
     res.status(400).send({ message: "Unable to delete. Season is already used in a product." })
     return
   }
-  const season = await Season.findOneAndDelete(req.query.id)
+  const season = await Season.findOneAndDelete({ _id: req.query.id })
   if (season) {
     await db.disconnect()
     res.send({ message: "Season deleted successfully" })

@@ -1,5 +1,6 @@
 import axios from "axios"
 import React, { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 
 const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSuccess, onDeleteSuccess }) => {
   const [input, setInput] = useState(item?.name ?? "")
@@ -12,7 +13,7 @@ const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSucc
 
   useEffect(() => {
     if (err) {
-      console.log(err, "err")
+      toast.error(err)
     }
   }, [err])
 

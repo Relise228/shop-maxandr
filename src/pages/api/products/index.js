@@ -13,9 +13,39 @@ const handler = async (req, res) => {
 
 const getHandler = async (req, res) => {
   await db.connect()
-  const products = await Product.find().populate("category").populate("brand").populate("season")
+  const page = parseInt(req.query.page) || 1
+  const limit = parseInt(req.query.limit) || 10
+  const { sortBy = "createdAt", sortOrder = "desc", categories, brands, seasons } = req.query
+
+  const skip = (page - 1) * limit
+  const filters = {
+    ...(categories && { category: { $in: categories.split(",") } }),
+    ...(brands && { brand: { $in: brands.split(",") } }),
+    ...(seasons && { season: { $in: seasons.split(",") } })
+  }
+  const totalProducts = await Product.countDocuments(filters)
+  const totalPages = Math.ceil(totalProducts / limit)
+  const products = await Product.find(filters)
+    .populate({
+      path: "category"
+    })
+    .populate({
+      path: "season"
+    })
+    .populate({
+      path: "brand"
+    })
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+
   await db.disconnect()
-  res.send(products)
+  res.send({
+    results: products,
+    currentPage: page,
+    totalPages,
+    totalProducts
+  })
 }
 
 const postHandler = async (req, res) => {

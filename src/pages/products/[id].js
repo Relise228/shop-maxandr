@@ -1,0 +1,45 @@
+import Layout from "@components/Layout"
+import db from "@utils/db"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import Product from "../../models/Product"
+
+const SingleProductPage = ({ product }) => {
+  return (
+    <Layout>
+      <Link href={`/products`} className="underline text-sky-500">
+        To products
+      </Link>
+      <div className="rounded-lg bg-gray-200 flex">
+        <Image
+          src={product.image.url}
+          alt={product.name}
+          className="object-cover object-center group-hover:opacity-75"
+          width={500}
+          height={500}
+        />
+        <div className="flex flex-col">
+          <h4 className="font-bold ">{product.name}</h4>
+          <div>{product.description}</div>
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
+export async function getServerSideProps(context) {
+  const { params } = context
+  const { id } = params
+
+  await db.connect()
+  const product = await Product.findOne({ _id: id }).lean()
+  await db.disconnect()
+  return {
+    props: {
+      product: product ? db.convertDocToObj(product) : null
+    }
+  }
+}
+
+export default SingleProductPage

@@ -44,7 +44,7 @@ const deleteHandler = async (req, res) => {
     res.status(400).send({ message: "Unable to delete. Category is already used in a product." })
     return
   }
-  const category = await Category.findOneAndDelete(req.query.id)
+  const category = await Category.findOneAndDelete({ _id: req.query.id })
   if (category) {
     await db.disconnect()
     res.send({ message: "Category deleted successfully" })
