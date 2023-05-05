@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Layout from "@components/Layout"
 import ProductItem from "@components/reusable/ProductItem"
-import { API_PRODUCTS } from "@utils/constants"
-import axios from "axios"
-// import { useSession } from "next-auth/react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Parallax, Autoplay } from "swiper"
 import Image from "next/image"
+import db from "@utils/db"
+import Product from "../models/Product"
 
 const slides = [
   {
@@ -23,23 +22,9 @@ const slides = [
   }
 ]
 
-export default function Home() {
-  // const { data: session } = useSession()
-
-  // Hey {session ? JSON.stringify(session, null, 2) : "stranger"}
-
-  const [products, setProducts] = useState([])
+export default function Home({ products = [] }) {
   const [parallaxSwiper, setParallaxSwiper] = useState(null)
   const parallaxAmount = parallaxSwiper ? parallaxSwiper.width * 0.95 : 0
-
-  const getProducts = async () => {
-    const res = await axios.get(API_PRODUCTS)
-    setProducts(res.data)
-  }
-
-  useEffect(() => {
-    getProducts()
-  }, [])
 
   const params = {
     modules: [Parallax, Autoplay],
@@ -91,8 +76,8 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-            {new Array(8).fill("").map((i, index) => (
-              <ProductItem key={index} />
+            {products.map(product => (
+              <ProductItem key={product._id} product={product} />
             ))}
           </div>
         </div>
@@ -102,4 +87,15 @@ export default function Home() {
       </div>
     </Layout>
   )
+}
+
+export async function getServerSideProps(context) {
+  await db.connect()
+  const products = await Product.find().populate("category").populate("brand").populate("season").skip(0).limit(8).lean()
+  await db.disconnect()
+  return {
+    props: {
+      products: products ? db.convertDocToObj(products) : null
+    }
+  }
 }

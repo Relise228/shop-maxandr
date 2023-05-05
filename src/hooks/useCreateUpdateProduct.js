@@ -10,6 +10,7 @@ const useCreateUpdateProduct = productId => {
   const [isLoading, setIsLoading] = useState(false)
   const [err, setErr] = useState("")
   const { options } = useBrandsSeasonsCategories()
+
   const [formValues, setFormValues] = useState({
     name: "",
     slug: "",
@@ -49,7 +50,6 @@ const useCreateUpdateProduct = productId => {
       setProductValues()
     }
   }, [productId])
-  console.log(formValues, "formValues")
 
   const handleFieldChange = (field, value) => {
     if (field === "sizeCountInStock") return
@@ -85,8 +85,7 @@ const useCreateUpdateProduct = productId => {
       setIsLoading(false)
       router.push("/admin/products")
     } catch (err) {
-      console.log(err, "err")
-      setErr("")
+      setErr(err)
       setIsLoading(false)
     }
   }
@@ -98,12 +97,12 @@ const useCreateUpdateProduct = productId => {
       if (productId) {
         await axios.delete(`/api/products/${productId}`)
       }
+
       setErr("")
       setIsLoading(false)
       router.push("/admin/products")
     } catch (err) {
-      console.log(err, "err")
-      setErr("")
+      setErr(err)
       setIsLoading(false)
     }
   }
