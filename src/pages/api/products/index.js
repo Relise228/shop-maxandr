@@ -1,5 +1,8 @@
 import db from "@utils/db"
 import Product from "../../../models/Product"
+require("../../../models/Brand")
+require("../../../models/Category")
+require("../../../models/Season")
 
 const handler = async (req, res) => {
   if (req.method === "GET") {

@@ -6,6 +6,9 @@ import { Parallax, Autoplay } from "swiper"
 import Image from "next/image"
 import db from "@utils/db"
 import Product from "../models/Product"
+import "../models/Category"
+import "../models/Brand"
+import "../models/Season"
 
 const slides = [
   {
@@ -89,7 +92,7 @@ export default function Home({ products = [] }) {
   )
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   await db.connect()
   const products = await Product.find().populate("category").populate("brand").populate("season").skip(0).limit(8).lean()
   await db.disconnect()

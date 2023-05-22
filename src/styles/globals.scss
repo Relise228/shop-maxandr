@@ -12,3 +12,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.card {
+  @apply mb-5 pb-2 block border border-gray-200  shadow-md;
+}
