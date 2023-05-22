@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose"
 
 const productSchema = new mongoose.Schema(
   {
@@ -7,9 +7,9 @@ const productSchema = new mongoose.Schema(
     image: {
       type: {
         url: { type: String, required: true },
-        public_id: { type: String, required: true },
+        public_id: { type: String, required: true }
       },
-      required: true,
+      required: true
     },
     description: { type: String, required: true },
     price: { type: Number, required: true },
@@ -20,27 +20,26 @@ const productSchema = new mongoose.Schema(
       {
         size: {
           type: String,
-          enum: ['xs', 's', 'm', 'l', 'xl', 'xxl'],
-          required: true,
+          enum: ["xs", "s", "m", "l", "xl", "xxl"],
+          required: true
         },
-        quantity: { type: Number, required: true, default: 0 },
-      },
+        quantity: { type: Number, required: true, default: 0 }
+      }
     ],
-    brand: { type: mongoose.Types.ObjectId, ref: 'Brand', required: true },
+    brand: { type: mongoose.Types.ObjectId, ref: "Brand", required: true },
     category: {
       type: mongoose.Types.ObjectId,
-      ref: 'Category',
-      required: true,
+      ref: "Category",
+      required: true
     },
-    season: { type: mongoose.Types.ObjectId, ref: 'Season' },
+    season: { type: mongoose.Types.ObjectId, ref: "Season" }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
-);
+)
 
 // productSchema.remove(['brandId', 'categoryId', 'seasonId']);
 
-const Product =
-  mongoose.models.Product || mongoose.model('Product', productSchema);
-export default Product;
+const Product = mongoose.models?.Product || mongoose.model("Product", productSchema)
+export default Product
