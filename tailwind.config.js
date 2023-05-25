@@ -11,7 +11,9 @@ module.exports = {
       colors: {
         "preview-bg-rgba": "rgba(247, 248, 250, 0.8)",
         heading: "#1D252C",
-        green: "#56B280"
+        green: "#56B280",
+        greyBorder: "#898989",
+        inputText: "#616161"
       }
     }
   },

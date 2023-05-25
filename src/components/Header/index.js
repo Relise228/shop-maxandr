@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons"
 import { signIn, signOut, useSession } from "next-auth/react"
 import FlyoutMenuDiscovery from "./FlyoutMenuDiscovery"
+import { Store } from "@utils/Store"
 
 const Header = () => {
   const { data: session, status } = useSession()
+  const { totalProductsAmount } = React.useContext(Store)
 
   return (
     <div className="header fixed w-full top-0 py-5 bg-white shadow-md z-50">
@@ -65,6 +67,7 @@ const Header = () => {
 
             <Link href="/cart">
               <FontAwesomeIcon icon={faCartShopping} fontSize={20} />
+              {totalProductsAmount}
             </Link>
           </div>
         </div>

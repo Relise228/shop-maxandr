@@ -14,5 +14,5 @@
 }
 
 .card {
-  @apply mb-5 pb-2 block border border-gray-200  shadow-md;
+  @apply pb-2 block border border-gray-200  shadow-md max-h-[370px];
 }
