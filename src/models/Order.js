@@ -10,7 +10,16 @@ const orderSchema = new mongoose.Schema(
           ref: "Product",
           required: true
         },
-        quantity: { type: Number, required: true }
+        orderedSizesQuantity: [
+          {
+            size: {
+              type: String,
+              enum: ["xs", "s", "m", "l", "xl", "xxl"],
+              required: true
+            },
+            quantity: { type: Number, required: true, default: 0 }
+          }
+        ]
       }
     ],
     shippingAddress: {
