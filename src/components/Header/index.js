@@ -66,8 +66,14 @@ const Header = () => {
             )}
 
             <Link href="/cart">
-              <FontAwesomeIcon icon={faCartShopping} fontSize={20} />
-              {totalProductsAmount}
+              <span className="relative">
+                <FontAwesomeIcon icon={faCartShopping} fontSize={20} />
+                {totalProductsAmount > 0 && (
+                  <span className="absolute bottom-3 left-4 rounded-full bg-green py-0.5 px-1.5 text-xs font-semibold text-white">
+                    {totalProductsAmount}
+                  </span>
+                )}
+              </span>
             </Link>
           </div>
         </div>
