@@ -1,12 +1,15 @@
 import React, { createContext, useReducer } from "react"
-import Cookies from "js-cookie"
+import { useLocalStorage } from "../hooks/useLocalStorage"
 
 export const Store = createContext()
 
+const defaultCart = { cartItems: [], shippingAddress: {}, paymentMethod: "" }
+
 const initialState = {
-  cart: Cookies.get("mahandr_cart")
-    ? JSON.parse(Cookies.get("mahandr_cart"))
-    : { cartItems: [], shippingAddress: {}, paymentMethod: "" }
+  cart:
+    typeof window !== "undefined" && localStorage.getItem("mahandr_cart")
+      ? JSON.parse(localStorage.getItem("mahandr_cart"))
+      : defaultCart
 }
 
 function reducer(state, action) {
@@ -17,17 +20,26 @@ function reducer(state, action) {
       const cartItems = existItem
         ? state.cart.cartItems.map(item =>
             item.product._id === existItem.product._id
-              ? { ...item, sizesQty: { ...item.sizesQty, [size]: (item.sizesQty[size] ?? 0) + addedQty } }
+              ? {
+                  ...item,
+                  sizesQty: {
+                    ...item.sizesQty,
+                    [size]: {
+                      quantity: (item.sizesQty[size]?.quantity ?? 0) + addedQty,
+                      totalSizePrice: item.product.price * ((item.sizesQty[size]?.quantity ?? 0) + addedQty)
+                    }
+                  }
+                }
               : item
           )
-        : [...state.cart.cartItems, { product, sizesQty: { [size]: addedQty } }]
-      Cookies.set("mahandr_cart", JSON.stringify({ ...state.cart, cartItems }))
-
+        : [
+            ...state.cart.cartItems,
+            { product, sizesQty: { [size]: { quantity: addedQty, totalSizePrice: product.price * addedQty } } }
+          ]
       return { ...state, cart: { ...state.cart, cartItems } }
     }
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(item => item.product._id !== action.payload.product._id)
-      Cookies.set("mahandr_cart", JSON.stringify({ ...state.cart, cartItems }))
       return { ...state, cart: { ...state.cart, cartItems } }
     }
     case "CART_RESET":
@@ -69,17 +81,22 @@ function reducer(state, action) {
 export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [totalProductsAmount, setTotalProductsAmount] = React.useState(0)
+  const [, setCartData] = useLocalStorage("mahandr_cart", defaultCart)
 
   React.useEffect(() => {
-    const newTotalProductsAmount = state.cart.cartItems.length
+    const newTotalProductsAmount = state.cart.cartItems?.length
       ? state.cart.cartItems.reduce(
-          (acc, { sizesQty }) => acc + Object.values(sizesQty).reduce((acc, curSizeQty) => acc + curSizeQty, 0),
+          (acc, { sizesQty }) => acc + Object.values(sizesQty).reduce((acc, curSize) => acc + curSize.quantity, 0),
           0
         )
       : 0
-    setTotalProductsAmount(newTotalProductsAmount)
-  }, [state])
 
+    setTotalProductsAmount(newTotalProductsAmount)
+  }, [state.cart])
+
+  React.useEffect(() => {
+    setCartData(state.cart)
+  }, [state.cart])
   const value = { state, dispatch, totalProductsAmount }
   return <Store.Provider value={value}>{children}</Store.Provider>
 }
