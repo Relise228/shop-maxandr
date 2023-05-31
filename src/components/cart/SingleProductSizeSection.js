@@ -1,10 +1,8 @@
-import { Store } from "@utils/Store"
 import React from "react"
+import { useUpdateProductQuantity } from "../../hooks/useUpdateProductQuantity"
 
 const SingleProductSizeSection = ({ size, quantity, product, totalSizePrice }) => {
-  const { dispatch } = React.useContext(Store)
-
-  const updateQuantity = (product, size, addedQty) => dispatch({ type: "CART_ADD_ITEM", payload: { product, size, addedQty } })
+  const { updateQuantity } = useUpdateProductQuantity(product)
 
   return (
     <>
@@ -15,13 +13,7 @@ const SingleProductSizeSection = ({ size, quantity, product, totalSizePrice }) =
             +
           </div>
           {quantity}
-          <div
-            className="px-2 cursor-pointer select-none"
-            onClick={() => {
-              if (quantity === 0) return
-              updateQuantity(product, size, -1)
-            }}
-          >
+          <div className="px-2 cursor-pointer select-none" onClick={() => updateQuantity(product, size, -1)}>
             -
           </div>
         </div>

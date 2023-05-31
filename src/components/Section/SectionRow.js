@@ -1,3 +1,4 @@
+import { getError } from "@utils/helpers"
 import axios from "axios"
 import React, { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -32,7 +33,7 @@ const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSucc
       setIsLoading(false)
     } catch (err) {
       setInput(item?.name || "")
-      setErr(err?.response?.data?.message || "Something went wrong")
+      setErr(getError(err))
       setIsLoading(false)
     }
   }
@@ -58,7 +59,7 @@ const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSucc
       setIsLoading(false)
     } catch (err) {
       setInput(item?.name || "")
-      setErr(err?.response?.data?.message || "Something went wrong")
+      setErr(getError(err))
       setIsLoading(false)
     }
   }

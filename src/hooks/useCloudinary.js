@@ -1,4 +1,5 @@
 import { CLOUDINARY_BASE_ENDPOINT } from "@utils/constants"
+import { getError } from "@utils/helpers"
 import axios from "axios"
 import { useState } from "react"
 
@@ -27,7 +28,7 @@ const useCloudinary = () => {
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
-      setError(err)
+      setError(getError(err))
     }
   }
 

@@ -1,4 +1,5 @@
 import { API_PRODUCTS } from "@utils/constants"
+import { getError } from "@utils/helpers"
 import axios from "axios"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -85,7 +86,7 @@ const useCreateUpdateProduct = productId => {
       setIsLoading(false)
       router.push("/admin/products")
     } catch (err) {
-      setErr(err)
+      setErr(getError(err))
       setIsLoading(false)
     }
   }
@@ -102,7 +103,7 @@ const useCreateUpdateProduct = productId => {
       setIsLoading(false)
       router.push("/admin/products")
     } catch (err) {
-      setErr(err)
+      setErr(getError(err))
       setIsLoading(false)
     }
   }

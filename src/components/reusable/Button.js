@@ -1,8 +1,16 @@
 import React from "react"
 
-const Button = props => {
+const Button = ({ underlinedButton, onClick, className, ...props }) => {
+  if (underlinedButton) {
+    return (
+      <h4 className={`text-green underline cursor-pointer ${className}`} onClick={onClick}>
+        {props.children}
+      </h4>
+    )
+  }
+
   return (
-    <button className="bg-green py-2 px-4 rounded-sm text-lg text-white" {...props}>
+    <button {...props} className={`bg-green py-2 px-4 rounded-sm text-lg text-white ${className}`} onClick={onClick}>
       {props.children}
     </button>
   )

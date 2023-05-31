@@ -1,17 +1,17 @@
 import Layout from "@components/Layout"
 import Button from "@components/reusable/Button"
 import db from "@utils/db"
-import { Store } from "@utils/Store"
 import Image from "next/image"
 import React from "react"
 import Product from "../../models/Product"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCartShopping, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { useRouter } from "next/router"
+import { useUpdateProductQuantity } from "../../hooks/useUpdateProductQuantity"
 
 const SingleProductPage = ({ product }) => {
   const [selectedSize, setSelectedSize] = React.useState(null)
-  const { dispatch } = React.useContext(Store)
+  const { updateQuantity } = useUpdateProductQuantity(product)
 
   const router = useRouter()
 
@@ -64,9 +64,9 @@ const SingleProductPage = ({ product }) => {
                 <p className="font-semibold text-xl">Description</p>
                 <p className="text-lg font-normal mt-5">{product.description}</p>
                 <Button
-                  className="bg-white hover:bg-green py-2 px-4 rounded-lg text-lg font-medium mb-2 text-green hover:text-white border-green border-2 w-full mt-8 cursor-pointer transition-all "
+                  className="hover:bg-green py-2 px-4 rounded-lg text-lg font-medium mb-2 text-green hover:text-white border-green border-2 w-full mt-8 cursor-pointer transition-all"
                   disabled={!selectedSize}
-                  onClick={() => dispatch({ type: "CART_ADD_ITEM", payload: { product, size: selectedSize } })}
+                  onClick={() => updateQuantity(product, selectedSize, 1)}
                 >
                   <FontAwesomeIcon icon={faCartShopping} className="mr-4" />+ Add to cart
                 </Button>

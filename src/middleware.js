@@ -8,7 +8,7 @@ export default withAuth({
       if (req.nextUrl.pathname === "/admin") {
         return token?.email === "mlysenko0601@gmail.com" || token?.email === "andreysmit43@gmail.com"
       }
-      // `/place-order` only requires the user to be logged in
+      // `/checkout` only requires the user to be logged in
       return !!token
     }
   },
@@ -17,4 +17,4 @@ export default withAuth({
   }
 })
 
-export const config = { matcher: ["/admin", "/place-order"] }
+export const config = { matcher: ["/admin", "/checkout/details", "/checkout/shipping", "/checkout/payment"] }
