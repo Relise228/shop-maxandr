@@ -7,6 +7,7 @@ import { faCartShopping, faUser } from "@fortawesome/free-solid-svg-icons"
 import { signIn, signOut, useSession } from "next-auth/react"
 import FlyoutMenuDiscovery from "./FlyoutMenuDiscovery"
 import { Store } from "@utils/Store"
+import { CounterCircleWrapper } from "@components/reusable/CounterCircleWrapper"
 
 const Header = () => {
   const { data: session, status } = useSession()
@@ -66,14 +67,9 @@ const Header = () => {
             )}
 
             <Link href="/cart">
-              <span className="relative">
+              <CounterCircleWrapper count={totalProductsAmount}>
                 <FontAwesomeIcon icon={faCartShopping} fontSize={20} />
-                {totalProductsAmount > 0 && (
-                  <span className="absolute bottom-3 left-4 rounded-full bg-green py-0.5 px-1.5 text-xs font-semibold text-white">
-                    {totalProductsAmount}
-                  </span>
-                )}
-              </span>
+              </CounterCircleWrapper>
             </Link>
           </div>
         </div>

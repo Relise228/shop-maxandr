@@ -12,6 +12,7 @@ import Season from "../../models/Season"
 import { FilterBar } from "@components/FilterBar/FilterBar"
 import { usePaginationHook } from "../../hooks/usePagination"
 import { useRouter } from "next/router"
+import Input from "@components/reusable/Input"
 
 const limit = 10
 
@@ -117,13 +118,7 @@ const ProductsPage = ({ products, categoriesOptions, brandsOptions, seasonsOptio
             </div>
             <div>Sorting</div>
           </div>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="border border-greyBorder text-inputText focus:outline-none focus:border-green  block w-full p-1 mb-0"
-            value={search}
-            onChange={e => setSearch(e.target.value ?? "")}
-          />
+          <Input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value ?? "")} />
         </div>
         <div className="grid grid-cols-5 gap-x-6">
           <div className="col-span-4 ">

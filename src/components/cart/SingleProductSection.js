@@ -1,5 +1,7 @@
+import Button from "@components/reusable/Button"
 import { Store } from "@utils/Store"
 import Image from "next/image"
+import Link from "next/link"
 import React from "react"
 import { SingleProductSizeSection } from "./SingleProductSizeSection"
 
@@ -21,10 +23,12 @@ const SingleProductSection = ({ product, sizesQty }) => {
           height={100}
         />
         <div className="flex flex-col justify-center">
-          <h2 className="pb-2 mb-2 text-2xl text-[#0B254B] font-medium capitalize">{product.name}</h2>
-          <h4 className="text-green underline cursor-pointer" onClick={() => removeProduct(product)}>
+          <Link href={`/products/${product._id}`} className="pb-2 mb-2 text-2xl text-[#0B254B] font-medium capitalize">
+            {product.name}
+          </Link>
+          <Button underlinedButton onClick={() => removeProduct(product)}>
             Remove
-          </h4>
+          </Button>
         </div>
       </div>
       <div className="font-semibold flex items-center">$ {product.price}</div>

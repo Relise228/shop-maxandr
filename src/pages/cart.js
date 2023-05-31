@@ -6,16 +6,11 @@ import { SingleProductSection } from "@components/cart/SingleProductSection"
 
 const Cart = () => {
   const [cartState, setCartState] = React.useState({ cartItems: [], shippingAddress: {}, paymentMethod: "" })
-  const { state } = React.useContext(Store)
+  const { state, totalProductsPrice } = React.useContext(Store)
   React.useEffect(() => {
     setCartState(state.cart)
   }, [state])
 
-  const totalProductsPrice =
-    cartState.cartItems?.reduce(
-      (acc, { sizesQty }) => acc + Object.values(sizesQty).reduce((acc, { totalSizePrice }) => acc + totalSizePrice, 0),
-      0
-    ) ?? 0
   return (
     <Layout>
       <div className="container mx-auto">
@@ -40,7 +35,7 @@ const Cart = () => {
             <div className="flex justify-end items-center mt-4">
               <div className="text-lg font-semibold me-4">Total</div>
               <div className="text-lg font-semibold me-4">$ {totalProductsPrice}</div>
-              <Link href="/checkout" className="bg-green py-2 px-8 rounded-sm text-lg text-white">
+              <Link href="/checkout/details" className="bg-green py-2 px-8 rounded-sm text-lg text-white">
                 Checkout
               </Link>
             </div>

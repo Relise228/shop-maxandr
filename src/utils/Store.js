@@ -1,9 +1,24 @@
 import React, { createContext, useReducer } from "react"
 import { useLocalStorage } from "../hooks/useLocalStorage"
+import { PAYMENT_METHOD_PAYPAL } from "./constants"
 
 export const Store = createContext()
 
-const defaultCart = { cartItems: [], shippingAddress: {}, paymentMethod: "" }
+export const defaultCart = {
+  cartItems: [],
+  shippingAddress: {
+    country: "",
+    city: "",
+    address: "",
+    postalCode: ""
+  },
+  details: {
+    contactPhone: "",
+    firstName: "",
+    secondName: ""
+  },
+  paymentMethod: PAYMENT_METHOD_PAYPAL
+}
 
 const initialState = {
   cart:
@@ -45,15 +60,19 @@ function reducer(state, action) {
     case "CART_RESET":
       return {
         ...state,
-        cart: {
-          cartItems: [],
-          shippingAddress: { location: {} },
-          paymentMethod: ""
-        }
+        cart: defaultCart
       }
     case "CART_CLEAR_ITEMS":
       return { ...state, cart: { ...state.cart, cartItems: [] } }
 
+    case "SAVE_ORDER_DETAILS":
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          details: { ...state.cart.details, ...action.payload }
+        }
+      }
     case "SAVE_SHIPPING_ADDRESS":
       return {
         ...state,
@@ -81,7 +100,9 @@ function reducer(state, action) {
 export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [totalProductsAmount, setTotalProductsAmount] = React.useState(0)
+  const [totalProductsPrice, setTotalProductsPrice] = React.useState(0)
   const [, setCartData] = useLocalStorage("mahandr_cart", defaultCart)
+  const [cart, setCart] = React.useState(defaultCart)
 
   React.useEffect(() => {
     const newTotalProductsAmount = state.cart.cartItems?.length
@@ -92,11 +113,19 @@ export function StoreProvider({ children }) {
       : 0
 
     setTotalProductsAmount(newTotalProductsAmount)
+    setTotalProductsPrice(
+      state.cart.cartItems?.reduce(
+        (acc, { sizesQty }) => acc + Object.values(sizesQty).reduce((acc, { totalSizePrice }) => acc + totalSizePrice, 0),
+        0
+      ) ?? 0
+    )
+    setCart(state.cart)
   }, [state.cart])
 
   React.useEffect(() => {
     setCartData(state.cart)
   }, [state.cart])
-  const value = { state, dispatch, totalProductsAmount }
+
+  const value = { state, dispatch, totalProductsAmount, totalProductsPrice, cart }
   return <Store.Provider value={value}>{children}</Store.Provider>
 }

@@ -1,3 +1,4 @@
+import { PAYMENT_METHOD_CARD, PAYMENT_METHOD_PAYPAL } from "@utils/constants"
 import mongoose from "mongoose"
 
 const orderSchema = new mongoose.Schema(
@@ -22,18 +23,24 @@ const orderSchema = new mongoose.Schema(
         ]
       }
     ],
+    orderTotalPrice: { type: Number, required: true },
     shippingAddress: {
-      fullName: { type: String, required: true },
+      country: { type: String, required: true },
+      city: { type: String, required: true },
       address: { type: String, required: true },
-      city: { type: String, required: true }
+      postalCode: { type: String, required: true }
     },
+    orderDetails: {
+      contactPhone: { type: String, required: true },
+      firstName: { type: String, required: true },
+      secondName: { type: String, required: true }
+    },
+    paymentMethod: { type: String, enum: [PAYMENT_METHOD_PAYPAL, PAYMENT_METHOD_CARD], required: true },
+    paymentResult: { id: String, status: String, email_address: String },
     isPaid: { type: Boolean, required: true, default: false },
     isDelivered: { type: Boolean, required: true, default: false },
     paidAt: { type: Date },
-    deliveredAt: { type: Date },
-    paymentMethod: { type: String, required: true },
-    paymentResult: { id: String, status: String, email_address: String },
-    orderTotalPrice: { type: Number, required: true }
+    deliveredAt: { type: Date }
   },
   {
     timestamps: true
