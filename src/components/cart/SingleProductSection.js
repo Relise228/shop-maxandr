@@ -5,7 +5,7 @@ import Link from "next/link"
 import React from "react"
 import { SingleProductSizeSection } from "./SingleProductSizeSection"
 
-const SingleProductSection = ({ product, sizesQty }) => {
+const SingleProductSection = ({ product, sizesQty, uneditableCart }) => {
   const { dispatch } = React.useContext(Store)
 
   const removeProduct = product => dispatch({ type: "CART_REMOVE_ITEM", payload: { product } })
@@ -26,9 +26,16 @@ const SingleProductSection = ({ product, sizesQty }) => {
           <Link href={`/products/${product._id}`} className="pb-2 mb-2 text-2xl text-[#0B254B] font-medium capitalize">
             {product.name}
           </Link>
-          <Button underlinedButton onClick={() => removeProduct(product)}>
-            Remove
-          </Button>
+          {uneditableCart ? null : (
+            <Button
+              underlinedButton
+              onClick={() => {
+                if (!uneditableCart) removeProduct(product)
+              }}
+            >
+              Remove
+            </Button>
+          )}
         </div>
       </div>
       <div className="font-semibold flex items-center">$ {product.price}</div>
@@ -40,6 +47,7 @@ const SingleProductSection = ({ product, sizesQty }) => {
             quantity={quantity}
             product={product}
             totalSizePrice={totalSizePrice}
+            uneditableCart={uneditableCart}
           />
         ))}
       </div>

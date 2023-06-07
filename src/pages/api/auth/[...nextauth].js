@@ -33,6 +33,7 @@ export const authOptions = {
   callbacks: {
     async jwt({ token }) {
       //   token.userRole = 'admin';
+      token.isAdmin = token?.email === "mlysenko0601@gmail.com" || token?.email === "andreysmit43@gmail.com"
       return token
     }
   }

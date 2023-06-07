@@ -18,13 +18,19 @@ const getHandler = async (req, res) => {
   await db.connect()
   const page = parseInt(req.query.page) || 1
   const limit = parseInt(req.query.limit) || 10
-  const { sortBy = "createdAt", sortOrder = "desc", categories, brands, seasons } = req.query
+  const { sortBy = "createdAt", sortOrder = "desc", categories, brands, seasons, search } = req.query
 
   const skip = (page - 1) * limit
   const filters = {
     ...(categories && { category: { $in: categories.split(",") } }),
     ...(brands && { brand: { $in: brands.split(",") } }),
-    ...(seasons && { season: { $in: seasons.split(",") } })
+    ...(seasons && { season: { $in: seasons.split(",") } }),
+    ...(search && {
+      name: {
+        $regex: search,
+        $options: "i"
+      }
+    })
   }
   const totalProducts = await Product.countDocuments(filters)
   const totalPages = Math.ceil(totalProducts / limit)

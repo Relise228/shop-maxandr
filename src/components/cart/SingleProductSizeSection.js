@@ -1,7 +1,7 @@
 import React from "react"
 import { useUpdateProductQuantity } from "../../hooks/useUpdateProductQuantity"
 
-const SingleProductSizeSection = ({ size, quantity, product, totalSizePrice }) => {
+const SingleProductSizeSection = ({ size, quantity, product, totalSizePrice, uneditableCart }) => {
   const { updateQuantity } = useUpdateProductQuantity(product)
 
   return (
@@ -9,11 +9,21 @@ const SingleProductSizeSection = ({ size, quantity, product, totalSizePrice }) =
       <div className="font-semibold flex items-center py-2">{size.toUpperCase()}</div>
       <div className="font-semibold flex items-center  py-2">
         <div className="flex justify-between items-center border border-green w-20">
-          <div className="px-2 text-green cursor-pointer select-none" onClick={() => updateQuantity(product, size, 1)}>
+          <div
+            className={`px-2 text-green ${uneditableCart ? "" : "cursor-pointer"} select-none`}
+            onClick={() => {
+              if (!uneditableCart) updateQuantity(product, size, 1)
+            }}
+          >
             +
           </div>
           {quantity}
-          <div className="px-2 cursor-pointer select-none" onClick={() => updateQuantity(product, size, -1)}>
+          <div
+            className={`px-2 ${uneditableCart ? "" : "cursor-pointer"} select-none`}
+            onClick={() => {
+              if (!uneditableCart) updateQuantity(product, size, -1)
+            }}
+          >
             -
           </div>
         </div>

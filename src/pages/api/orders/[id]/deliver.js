@@ -19,7 +19,7 @@ const handler = async (req, res) => {
 
     const deliveredOrder = await order.save()
     await db.disconnect()
-    res.send({ message: "order paid successfully", order: deliveredOrder })
+    res.send(deliveredOrder)
   } else {
     await db.disconnect()
     res.status(404).send({ message: "Error: order not found" })

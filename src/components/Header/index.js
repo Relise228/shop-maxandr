@@ -10,7 +10,7 @@ import { Store } from "@utils/Store"
 import { CounterCircleWrapper } from "@components/reusable/CounterCircleWrapper"
 
 const Header = () => {
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const { totalProductsAmount } = React.useContext(Store)
 
   return (
