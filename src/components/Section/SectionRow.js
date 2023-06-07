@@ -1,22 +1,16 @@
 import { getError } from "@utils/helpers"
 import axios from "axios"
 import React, { useEffect, useState } from "react"
-import { toast } from "react-toastify"
+import { useErrorWithToaster } from "../../hooks/useErrorWithToaster"
 
 const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSuccess, onDeleteSuccess }) => {
   const [input, setInput] = useState(item?.name ?? "")
   const [isLoading, setIsLoading] = useState(false)
-  const [err, setErr] = useState("")
+  const { setErrorMessage } = useErrorWithToaster({ withToaster: true })
 
   useEffect(() => {
     setInput(item?.name ?? "")
   }, [item?.name])
-
-  useEffect(() => {
-    if (err) {
-      toast.error(err)
-    }
-  }, [err])
 
   const revertHandler = () => setInput(item?.name || "")
 
@@ -29,11 +23,11 @@ const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSucc
       await axios.delete(`/api/${endpoint}/${item._id}`)
       onDeleteSuccess(item._id)
 
-      setErr("")
+      setErrorMessage("")
       setIsLoading(false)
     } catch (err) {
       setInput(item?.name || "")
-      setErr(getError(err))
+      setErrorMessage(getError(err))
       setIsLoading(false)
     }
   }
@@ -55,11 +49,11 @@ const SectionRow = ({ creatableMode, item, endpoint, onEditSuccess, onCreateSucc
         onEditSuccess(input, item._id)
       }
 
-      setErr("")
+      setErrorMessage("")
       setIsLoading(false)
     } catch (err) {
       setInput(item?.name || "")
-      setErr(getError(err))
+      setErrorMessage(getError(err))
       setIsLoading(false)
     }
   }

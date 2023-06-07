@@ -1,4 +1,5 @@
 import db from "@utils/db"
+import { getToken } from "next-auth/jwt"
 import Order from "../../../../models/Order"
 
 const handler = async (req, res) => {
@@ -11,9 +12,17 @@ const handler = async (req, res) => {
   }
 }
 const getHandler = async (req, res) => {
+  const user = await getToken({ req })
+  if (!user) {
+    return res.status(401).send({ message: "Error: signin required" })
+  }
+
   await db.connect()
 
-  const order = await Order.findById(req.query.id)
+  const order = await Order.findById(req.query.id).populate({
+    path: "orderItems.product",
+    model: "Product"
+  })
   await db.disconnect()
   res.send(order)
 }

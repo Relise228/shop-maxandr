@@ -1,12 +1,13 @@
 import { CheckoutWrapper } from "@components/Checkout/CheckoutWrapper"
 import Layout from "@components/Layout"
+import { faCircleCheck } from "@fortawesome/free-regular-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { PayPalButtons } from "@paypal/react-paypal-js"
 import { API_ORDERS, PAYMENT_METHOD_CARD, PAYMENT_METHOD_PAYPAL } from "@utils/constants"
 import { getError } from "@utils/helpers"
 import { Store } from "@utils/Store"
 import axios from "axios"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/router"
 import React from "react"
 import { toast } from "react-toastify"
 import { useCheckoutForm } from "../../hooks/useCheckoutForm"
@@ -18,14 +19,20 @@ const PaymentPage = () => {
     form: selectedPaymentMethod
   } = useCheckoutForm({ formType: "paymentMethod", actionType: "SAVE_PAYMENT_METHOD" })
   const { data: session } = useSession()
-  const router = useRouter()
   const { totalProductsPrice, state, dispatch } = React.useContext(Store)
+  const [isOrderPaid, setIsOrderPaid] = React.useState(false)
 
   const possiblePaymentMethods = React.useMemo(() => [PAYMENT_METHOD_PAYPAL, PAYMENT_METHOD_CARD], [])
 
   React.useEffect(() => {
     if (selectedPaymentMethod) savePaymentMethodInStorage()
   }, [selectedPaymentMethod])
+
+  React.useEffect(() => {
+    if (isOrderPaid) {
+      return () => dispatch({ type: "CART_CLEAR_ITEMS" })
+    }
+  }, [isOrderPaid])
 
   const createOrder = (data, actions) => {
     return actions.order
@@ -64,9 +71,7 @@ const PaymentPage = () => {
           },
           isPaid: true
         })
-        toast.success("Order is paid successfully")
-        dispatch({ type: "CART_CLEAR_ITEMS" })
-        router.push("/")
+        setIsOrderPaid(true)
       } catch (err) {
         toast.error(getError(err))
       }
@@ -77,30 +82,40 @@ const PaymentPage = () => {
   }
   return (
     <Layout>
-      <CheckoutWrapper dontShowNextButton activeStep={3}>
-        <div className="flex items-center mb-8">
-          {possiblePaymentMethods.map(paymentMethod => (
-            <div key={paymentMethod} className="flex items-center me-4">
-              <input
-                type="radio"
-                value={paymentMethod}
-                name="default-radio"
-                className="w-4 h-4 text-green bg-gray-100 border-gray-300"
-                checked={selectedPaymentMethod === paymentMethod}
-                onChange={e => handleChange(e.target.value)}
-              />
-              <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize">{paymentMethod}</label>
-            </div>
-          ))}
-        </div>
-
-        {selectedPaymentMethod === PAYMENT_METHOD_PAYPAL ? (
-          <div className="w-full">
-            <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError} />
+      <CheckoutWrapper dontShowNextButton activeStep={3} paymentConfirmed={isOrderPaid}>
+        {isOrderPaid ? (
+          <div className="flex items-center flex-col justify-center mt-8">
+            <FontAwesomeIcon size="7x" icon={faCircleCheck} className="text-green mb-4" />
+            <h2 className="pb-2 mb-2 text-2xl text-[#0B254B] font-medium">Payment Confirmed</h2>
+            <p>Thank you {session?.user?.name || ""} for your order.</p>
           </div>
-        ) : selectedPaymentMethod === PAYMENT_METHOD_CARD ? (
-          "Here will be cards form from stripe maybe"
-        ) : null}
+        ) : (
+          <>
+            <div className="flex items-center mb-8">
+              {possiblePaymentMethods.map(paymentMethod => (
+                <div key={paymentMethod} className="flex items-center me-4">
+                  <input
+                    type="radio"
+                    value={paymentMethod}
+                    name="default-radio"
+                    className="w-4 h-4 text-green bg-gray-100 border-gray-300"
+                    checked={selectedPaymentMethod === paymentMethod}
+                    onChange={e => handleChange(e.target.value)}
+                  />
+                  <label className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 capitalize">{paymentMethod}</label>
+                </div>
+              ))}
+            </div>
+
+            {selectedPaymentMethod === PAYMENT_METHOD_PAYPAL ? (
+              <div className="w-full">
+                <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError} />
+              </div>
+            ) : selectedPaymentMethod === PAYMENT_METHOD_CARD ? (
+              "Here will be cards form from stripe maybe"
+            ) : null}
+          </>
+        )}
       </CheckoutWrapper>
     </Layout>
   )

@@ -11,15 +11,14 @@ const useUpdateProductQuantity = product => {
 
   const currentProductItemFromCart = state.cart.cartItems?.find(item => item.product._id === product._id)
   const updateQuantity = (product, size, addedQty) => {
-    if (!currentProductItemFromCart) return
     if (addedQty > 0) {
-      if (currentProductItemFromCart.sizesQty[size]?.quantity + addedQty > sizeCountInStockObject[size]) {
+      if ((currentProductItemFromCart?.sizesQty[size]?.quantity ?? 0) + addedQty > sizeCountInStockObject[size]) {
         toast.error(`You reached maximum amount of ${product.name} - ${size.toUpperCase()}`)
         return
       }
       dispatch({ type: "CART_ADD_ITEM", payload: { product, size, addedQty } })
     } else {
-      if (currentProductItemFromCart.sizesQty[size]?.quantity + addedQty < 0) return
+      if ((currentProductItemFromCart?.sizesQty[size]?.quantity ?? 0) + addedQty < 0) return
       dispatch({ type: "CART_ADD_ITEM", payload: { product, size, addedQty } })
     }
   }

@@ -1,4 +1,5 @@
 import db from "@utils/db"
+import { getToken } from "next-auth/jwt"
 import Order from "../../../models/Order"
 import Product from "../../../models/Product"
 
@@ -13,13 +14,47 @@ const handler = async (req, res) => {
 }
 
 const getHandler = async (req, res) => {
-  await db.connect()
-  const categories = await Order.find()
+  const user = await getToken({ req })
+  if (!user) {
+    return res.status(401).send({ message: "Error: signin required" })
+  }
+
+  const page = parseInt(req.query.page) || 1
+  const limit = parseInt(req.query.limit) || 10
+  const { sortBy = "createdAt", sortOrder = "desc", customerEmail, delivered } = req.query
+
+  const skip = (page - 1) * limit
+  const filters = {
+    ...(customerEmail && {
+      "customer.email": {
+        $regex: customerEmail,
+        $options: "i"
+      }
+    })
+  }
+  const totalOrders = await Order.countDocuments(filters)
+  const totalPages = Math.ceil(totalOrders / limit)
+  const orders = await Order.find(filters)
+
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+
   await db.disconnect()
-  res.send(categories)
+  res.send({
+    results: orders,
+    currentPage: page,
+    totalPages,
+    totalOrders
+  })
 }
 
 const postHandler = async (req, res) => {
+  const user = await getToken({ req })
+  if (!user) {
+    return res.status(401).send({ message: "Error: signin required" })
+  }
+
   await db.connect()
 
   req.body.orderItems.forEach(async orderItem => {

@@ -1,5 +1,7 @@
 import Layout from "@components/Layout"
-import SortWrapper from "@components/reusable/SortWrapper"
+import { TableHeader } from "@components/reusable/Table/TableHeader"
+import { TableRowWrapper } from "@components/reusable/Table/TableRowWrapper"
+import { TableWithPaginationWrapper } from "@components/reusable/Table/TableWithPaginationWrapper"
 import { API_PRODUCTS } from "@utils/constants"
 import axios from "axios"
 import Image from "next/image"
@@ -35,83 +37,52 @@ const AdminProductsPage = () => {
     getProducts()
   }, [sort, pageNumber])
 
+  const columns = [
+    { fieldName: "name", label: "Product name", sortable: true },
+    { fieldName: "price", label: "Price, $", sortable: true },
+    { fieldName: "brand", label: "Brand" },
+    { fieldName: "category", label: "Category" },
+    { fieldName: "action", label: "Action" }
+  ]
+
+  const sortHandler = ({ sortBy, sortOrder }) => setSort({ sortBy, sortOrder })
+
   return (
     <Layout>
       <Link href={`/admin/products/create`} className="bg-orange-300 py-2 px-4 rounded-lg m-8">
         Create
       </Link>
 
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-8">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                <SortWrapper
-                  fieldName="name"
-                  sortDirection={sort.sortOrder}
-                  activeSortFieldName={sort.sortBy}
-                  setSort={(sortBy, sortOrder) => setSort({ sortBy, sortOrder })}
-                >
-                  Product name
-                </SortWrapper>
+      <TableWithPaginationWrapper Pagination={Pagination}>
+        <TableHeader columns={columns} sortHandler={sortHandler} sortState={sort} />
+        <tbody>
+          {products.map((product, idx) => (
+            <TableRowWrapper key={product._id} rowIndex={idx}>
+              <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <div className="me-2">{product.name}</div>
+                <Image
+                  src={product.image.url}
+                  alt={product.name}
+                  width={64}
+                  height={64}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto"
+                  }}
+                />
               </th>
-              <th scope="col" className="px-6 py-3">
-                <SortWrapper
-                  fieldName="price"
-                  sortDirection={sort.sortOrder}
-                  activeSortFieldName={sort.sortBy}
-                  setSort={(sortBy, sortOrder) => setSort({ sortBy, sortOrder })}
-                >
-                  Price, $
-                </SortWrapper>
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Brand
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Category
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, idx) => (
-              <tr
-                key={product._id}
-                className={`${idx % 2 ? "bg-gray-50 dark:bg-gray-800" : "bg-white border-b dark:bg-gray-900"}  dark:border-gray-700`}
-              >
-                <th scope="row" className="flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <div className="me-2">{product.name}</div>
-                  <Image
-                    src={product.image.url}
-                    alt={product.name}
-                    width={64}
-                    height={64}
-                    style={{
-                      maxWidth: "100%",
-                      height: "auto"
-                    }}
-                  />
-                </th>
-                <td className="px-6 py-4">{product.price}</td>
-                <td className="px-6 py-4">{product.brand?.name}</td>
-                <td className="px-6 py-4">{product.category?.name}</td>
-                <td className="px-6 py-4">
-                  <Link
-                    href={`/admin/products/${product._id}`}
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                  >
-                    Edit
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {Pagination}
-      </div>
+              <td className="px-6 py-4">{product.price}</td>
+              <td className="px-6 py-4">{product.brand?.name}</td>
+              <td className="px-6 py-4">{product.category?.name}</td>
+              <td className="px-6 py-4">
+                <Link href={`/admin/products/${product._id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                  Edit
+                </Link>
+              </td>
+            </TableRowWrapper>
+          ))}
+        </tbody>
+      </TableWithPaginationWrapper>
     </Layout>
   )
 }

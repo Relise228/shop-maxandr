@@ -9,3 +9,4 @@ export const CLOUDINARY_BASE_ENDPOINT = `https://api.cloudinary.com/v1_1/${proce
 
 export const PAYMENT_METHOD_PAYPAL = "paypal"
 export const PAYMENT_METHOD_CARD = "card"
+export const ONLY_ADMIN_PATHNAMES = ["/admin/products", "/admin/orders"]
